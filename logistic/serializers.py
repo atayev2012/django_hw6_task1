@@ -53,7 +53,11 @@ class StockSerializer(serializers.ModelSerializer):
         # здесь вам надо обновить связанные таблицы
         stock_product_objects = StockProduct.objects.filter(stock=instance)
         for item in positions:
-            stock_product = stock_product_objects.filter(product=item.get("product"))
-            stock_product.update(price=item.get("price"), quantity=item.get("quantity"))
+            StockProduct.objects.update_or_create(stock=stock, product=item.get("product"), defaults={
+                "price": item.get("price"),
+                "quantity": item.get("quantity")
+            })
+            # stock_product = stock_product_objects.filter(product=item.get("product"))
+            # stock_product.update(price=item.get("price"), quantity=item.get("quantity"))
 
         return stock
